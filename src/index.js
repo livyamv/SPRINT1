@@ -1,5 +1,7 @@
 const express = require("express"); //Importa o express
 
+const test_connect = require('./db/test_connect')
+
 //Define uma classe para organizar a lógica de aplicação
 class AppController {
   constructor() {
@@ -9,6 +11,7 @@ class AppController {
     this.middlewares();
     //Chama o método routes para definir as rotas da Api
     this.routes();
+    test_connect();
   }
 
   middlewares() {
@@ -25,5 +28,3 @@ class AppController {
 
 //Exportando a instância de Express configurada, para que seja acessada em outros aquivos
 module.exports = new AppController().express;
-
-//sdadas
