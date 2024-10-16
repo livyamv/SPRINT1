@@ -25,3 +25,5 @@ class AppController {
 
 //Exportando a instância de Express configurada, para que seja acessada em outros aquivos
 module.exports = new AppController().express;
+
+//sdadas
