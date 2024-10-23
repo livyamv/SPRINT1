@@ -15,11 +15,10 @@ module.exports = class usuario_controller {
         .status(400)
         .json({ error: "as senhas não coincidem (não estão iguais)" });
     } else {
-      const query = `INSERT INTO usuario (senha, email, nome_usuario, check_senha) VALUES( 
+      const query = `INSERT INTO usuario (senha, email, nome_usuario) VALUES( 
                 '${senha}', 
                 '${email}', 
-                '${nome_usuario}',
-                '${check_senha})`;
+                '${nome_usuario}');`;
       try {
         connect_database.query(query, function (err, results) {
           if (err) {
@@ -34,17 +33,17 @@ module.exports = class usuario_controller {
             } else {
               return res
                 .status(500)
-                .json({ error: "erro interno do servidor :(" });
+                .json({ error: "Erro interno do servidor :(" });
             }
           } else {
             return res
               .status(201)
-              .json({ message: "cadastro realizado com sucesso." });
+              .json({ message: "Cadastro realizado com sucesso." });
           }
         });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "erro interno do servidor" });
+        res.status(500).json({ error: "Erro interno do servidor" });
       }
     }
   }
@@ -67,7 +66,7 @@ module.exports = class usuario_controller {
             console.error(err);
             console.log(err.code);
             return res.status(500).json({
-                error: "erro interno do servidor :("
+                error: "Erro interno do servidor :("
             });
            } 
            if(!results){
@@ -83,19 +82,20 @@ module.exports = class usuario_controller {
             console.error(err);
             console.log(err.code);
             return res.status(500).json({
-                error: "erro interno do servidor :("
+                error: "Erro interno do servidor :("
             });
           }
           if(!results){
             return res.status(400).json({
-              error: "a senha informada está incorreta"
+              error: "A senha informada está incorreta"
             });
           }
           return 
         });
     }
     catch(error){
-
+      console.error(error);
+      res.status(500).json({error: "Erro interno do servidor"});
     }
   }
 };
