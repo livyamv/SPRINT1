@@ -61,7 +61,7 @@ module.exports = class usuario_controller {
     let query = `SELECT * FROM usuario WHERE nome=?, email=?, senha=?`
     const values = [nome, email, senha];
     try{
-        connect_database.query(query, function(err, results){
+        connect_database.query(query, values, function(err, results){ //"results" é um booleano, então ele retornará "true" ou "false"
            if(err){
             console.error(err);
             console.log(err.code);
@@ -69,6 +69,10 @@ module.exports = class usuario_controller {
                 error: "erro interno do servidor :("
             });
            } 
+           const login_check = results;
+           if(login_check){
+
+           }
            
         });
     }
