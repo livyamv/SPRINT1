@@ -2,9 +2,9 @@ const connect_database = require("../db/connect_database");
 
 module.exports = class usuario_controller {
   static async cadastrar_usuario(req, res) {
-    const { nome, email, senha, check_senha } = req.body;
+    const { nome_usuario, email, senha, check_senha } = req.body;
 
-    if (!nome || !email || !senha || !check_senha) {
+    if (!nome_usuario || !email || !senha || !check_senha) {
       return res
         .status(400)
         .json({ error: "Todos os campos devem ser preenchidos" });
@@ -18,7 +18,7 @@ module.exports = class usuario_controller {
       const query = `INSERT INTO usuario (senha, email, nome_usuario, check_senha) VALUES( 
                 '${senha}', 
                 '${email}', 
-                '${nome}',
+                '${nome_usuario}',
                 '${check_senha})`;
       try {
         connect_database.query(query, function (err, results) {
@@ -49,19 +49,20 @@ module.exports = class usuario_controller {
     }
   }
   static async login_usuario(req, res){
-    const { nome, email, senha} = req.body;
+    const { email, senha} = req.body;
 
-    if (!nome || !email || !senha) {
+    if ( !email || !senha) {
       return res
         .status(400)
         .json({ error: "Todos os campos devem ser preenchidos" });
     } else if (!email.includes("@")) {
       return res.status(400).json({ error: "Email inválido. Deve conter @" });
     }
-    let query = `SELECT * FROM usuario WHERE nome=?, email=?, senha=?`
-    const values = [nome, email, senha];
+    let query = `SELECT * FROM usuario WHERE email=?`
+    const email_check = [email];
+    const senha_check = [senha];
     try{
-        connect_database.query(query, values, function(err, results){ //"results" é um booleano, então ele retornará "true" ou "false"
+        connect_database.query(query, email_check, function(err, results){ //"results" é um booleano, então ele retornará "true" ou "false"
            if(err){
             console.error(err);
             console.log(err.code);
@@ -69,11 +70,28 @@ module.exports = class usuario_controller {
                 error: "erro interno do servidor :("
             });
            } 
-           const login_check = results;
-           if(login_check){
-
+           if(!results){
+            return res.status(400).json({
+              error: "O email informado está incorreto ou não se encontra cadastrado no sistema"
+            });
            }
-           
+           return res.status(200);
+        });
+        query = `SELECT * FROM usuario WHERE email=?, senha=?`
+        connect_database.query(query,email_check, senha_check, function(err, results){
+          if(err){
+            console.error(err);
+            console.log(err.code);
+            return res.status(500).json({
+                error: "erro interno do servidor :("
+            });
+          }
+          if(!results){
+            return res.status(400).json({
+              error: "a senha informada está incorreta"
+            });
+          }
+          return 
         });
     }
     catch(error){
